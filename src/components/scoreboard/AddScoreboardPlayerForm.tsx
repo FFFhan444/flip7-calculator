@@ -56,6 +56,7 @@ export function AddScoreboardPlayerForm({ onAddPlayer }: AddScoreboardPlayerForm
         <motion.button
           type="submit"
           disabled={!name.trim()}
+          onMouseDown={(e) => e.preventDefault()}
           className="px-6 py-3 bg-dark text-pastel font-semibold flex items-center gap-2 hover:bg-dark-soft transition-colors disabled:opacity-50 disabled:cursor-not-allowed pixel-corners-dark"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
