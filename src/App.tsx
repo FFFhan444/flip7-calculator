@@ -6,12 +6,14 @@ import { CardSelectorTray } from './components/scoreboard/CardSelectorTray'
 import { AddScoreboardPlayerForm } from './components/scoreboard/AddScoreboardPlayerForm'
 import { useScoreboard } from './hooks/useScoreboard'
 import { useVisualViewportHeight } from './hooks/useVisualViewportHeight'
+import { useLockDocumentScroll } from './hooks/useLockDocumentScroll'
 import type { ScoreboardPlayer, Card } from './lib/scoreboard'
 import './index.css'
 
 function App() {
   const scoreboard = useScoreboard()
   const viewportHeight = useVisualViewportHeight()
+  useLockDocumentScroll()
   const [showSplash, setShowSplash] = useState(true)
   const [splashMinTimePassed, setSplashMinTimePassed] = useState(false)
   const [scoringPlayer, setScoringPlayer] = useState<ScoreboardPlayer | null>(null)
