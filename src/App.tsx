@@ -1,18 +1,21 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { SplashScreen } from './components/SplashScreen'
 import { ScoreboardTable } from './components/scoreboard/ScoreboardTable'
 import { CardSelectorTray } from './components/scoreboard/CardSelectorTray'
 import { AddScoreboardPlayerForm } from './components/scoreboard/AddScoreboardPlayerForm'
 import { useScoreboard } from './hooks/useScoreboard'
+import { useVisualViewportHeight } from './hooks/useVisualViewportHeight'
 import type { ScoreboardPlayer, Card } from './lib/scoreboard'
 import './index.css'
 
 function App() {
   const scoreboard = useScoreboard()
+  const viewportHeight = useVisualViewportHeight()
   const [showSplash, setShowSplash] = useState(true)
   const [splashMinTimePassed, setSplashMinTimePassed] = useState(false)
   const [scoringPlayer, setScoringPlayer] = useState<ScoreboardPlayer | null>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -26,6 +29,10 @@ function App() {
       setShowSplash(false)
     }
   }, [splashMinTimePassed])
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
+  }, [scoreboard.players.length])
 
   const handleScorePlayer = (player: ScoreboardPlayer) => {
     setScoringPlayer(player)
@@ -66,45 +73,50 @@ function App() {
         onComplete={() => {}}
       />
 
-      <div className="min-h-screen bg-pastel pb-48">
-        <div className="max-w-2xl mx-auto px-4 py-8">
-          {/* Header */}
-          <header className="flex items-center justify-between mb-8">
-            <h1 className="font-title text-5xl text-dark">
-              Flip 7
-            </h1>
-          </header>
+      <div
+        className="h-dvh flex flex-col bg-pastel overflow-hidden"
+        style={viewportHeight !== null ? { height: `${viewportHeight}px` } : undefined}
+      >
+        {/* Header */}
+        <header className="shrink-0 max-w-2xl w-full mx-auto px-4 pt-8">
+          <h1 className="font-title text-5xl text-dark">
+            Flip 7
+          </h1>
+        </header>
 
-          {/* Content */}
-          <ScoreboardTable
-            players={scoreboard.players}
-            onScorePlayer={handleScorePlayer}
-            onDeletePlayer={handleDeleteScoreboardPlayer}
-            onNewGame={handleNewGame}
-            onResetAll={handleResetAll}
-            scoringPlayerId={scoringPlayer?.id ?? null}
-          />
+        {/* Content */}
+        <div ref={scrollRef} className="flex-1 overflow-y-auto">
+          <div className="max-w-2xl mx-auto px-4 py-8">
+            <ScoreboardTable
+              players={scoreboard.players}
+              onScorePlayer={handleScorePlayer}
+              onDeletePlayer={handleDeleteScoreboardPlayer}
+              onNewGame={handleNewGame}
+              onResetAll={handleResetAll}
+              scoringPlayerId={scoringPlayer?.id ?? null}
+            />
+          </div>
         </div>
-      </div>
 
-      {/* Sticky Bottom Controls */}
-      <div className="fixed bottom-0 left-0 right-0 z-10 bg-pastel border-t-2 border-dark">
-        <div className="max-w-2xl mx-auto px-4 pt-4 pb-8">
-          <AnimatePresence mode="wait">
-            {scoringPlayer ? (
-              <CardSelectorTray
-                key="card-selector"
-                player={scoringPlayer}
-                onSubmit={handleSubmitRound}
-                onCancel={() => setScoringPlayer(null)}
-              />
-            ) : (
-              <AddScoreboardPlayerForm
-                key="add-player"
-                onAddPlayer={scoreboard.addPlayer}
-              />
-            )}
-          </AnimatePresence>
+        {/* Bottom Controls */}
+        <div className="shrink-0 bg-pastel border-t-2 border-dark">
+          <div className="max-w-2xl mx-auto px-4 pt-4 pb-8">
+            <AnimatePresence mode="wait">
+              {scoringPlayer ? (
+                <CardSelectorTray
+                  key="card-selector"
+                  player={scoringPlayer}
+                  onSubmit={handleSubmitRound}
+                  onCancel={() => setScoringPlayer(null)}
+                />
+              ) : (
+                <AddScoreboardPlayerForm
+                  key="add-player"
+                  onAddPlayer={scoreboard.addPlayer}
+                />
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     </>
