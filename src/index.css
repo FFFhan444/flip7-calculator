@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+@theme {
+  /* Pastel colors - will be overridden by JS */
+  --color-pastel: #98D4B5;
+  --color-pastel-light: #B8E8CF;
+  --color-pastel-dark: #78C49A;
+
+  /* Dark UI colors */
+  --color-dark: #1A1A1A;
+  --color-dark-soft: #2D2D2D;
+  --color-dark-muted: #4A4A4A;
+
+  /* Fonts */
+  --font-title: 'Tiny5', monospace;
+  --font-body: 'Space Grotesk', sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--color-pastel);
+  color: var(--color-dark);
+  font-family: var(--font-body);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.font-title {
+  font-family: var(--font-title);
+}
+
+/* Pixelated corners effect */
+.pixel-corners {
+  --pixel: 6px;
+  --bg: var(--color-pastel);
+  position: relative;
+  border: 3px solid var(--color-dark) !important;
+  border-radius: 0 !important;
+}
+
+.pixel-corners::before,
+.pixel-corners::after {
+  content: '';
+  position: absolute;
+  width: var(--pixel);
+  height: var(--pixel);
+  background: var(--bg);
+}
+
+/* Top corners */
+.pixel-corners::before {
+  top: -3px;
+  left: -3px;
+  box-shadow:
+    calc(100% + 6px - var(--pixel)) 0 0 0 var(--bg);
+  border-bottom: 3px solid var(--color-dark);
+  border-right: 3px solid var(--color-dark);
+}
+
+/* Bottom corners */
+.pixel-corners::after {
+  bottom: -3px;
+  right: -3px;
+  box-shadow:
+    calc(-100% - 6px + var(--pixel)) 0 0 0 var(--bg);
+  border-top: 3px solid var(--color-dark);
+  border-left: 3px solid var(--color-dark);
+}
+
+/* Variant for dark background elements */
+.pixel-corners-dark {
+  --pixel: 6px;
+  --bg: var(--color-pastel);
+  position: relative;
+  border-radius: 0 !important;
+}
+
+.pixel-corners-dark::before,
+.pixel-corners-dark::after {
+  content: '';
+  position: absolute;
+  width: var(--pixel);
+  height: var(--pixel);
+  background: var(--bg);
+  z-index: 1;
+}
+
+.pixel-corners-dark::before {
+  top: 0;
+  left: 0;
+  box-shadow:
+    calc(100% - var(--pixel)) 0 0 0 var(--bg);
+}
+
+.pixel-corners-dark::after {
+  bottom: 0;
+  right: 0;
+  box-shadow:
+    calc(-100% + var(--pixel)) 0 0 0 var(--bg);
+}
