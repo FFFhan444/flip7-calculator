@@ -74,7 +74,7 @@ function App() {
       />
 
       <div
-        className="h-dvh flex flex-col bg-pastel overflow-hidden"
+        className="fixed top-0 left-0 w-full h-dvh flex flex-col bg-pastel overflow-hidden"
         style={viewportHeight !== null ? { height: `${viewportHeight}px` } : undefined}
       >
         {/* Header */}
